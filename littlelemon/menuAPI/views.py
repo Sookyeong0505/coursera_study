@@ -17,7 +17,14 @@ def menu(request):
 
 class MenuList(APIView):
     def get(self, request):
-        return Response({'menus': 'This is the menu'}, status=status.HTTP_200_OK)
+        item = request.GET.get('item')
+        if(item):
+            return Response('Menu name: ' + item, status=status.HTTP_200_OK)
+        return Response({'message': 'This is the menu'}, status=status.HTTP_200_OK)
 
     def post(self, request):
-        return Response({'menus': 'New menu is created'}, status=status.HTTP_201_CREATED)
+        return Response({'name': request.data.get('name')}, status=status.HTTP_201_CREATED)
+
+class Menu(APIView):
+    def get(self, request, pk):
+        return Response({'message': 'single menu with id: ' + str(pk)}, status=status.HTTP_200_OK)
