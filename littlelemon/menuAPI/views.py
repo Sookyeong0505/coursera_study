@@ -3,8 +3,8 @@ from rest_framework.response import Response
 from rest_framework import generics
 from rest_framework.decorators import api_view
 
-from .models import MenuItem
-from .serializers import MenuItemSerializer
+from .models import MenuItem, Category
+from .serializers import MenuItemSerializer, CategorySerializer
 
 
 @api_view()
@@ -26,8 +26,14 @@ class MenuItemsView(generics.ListCreateAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
 
+
 # generics.RetrieveUpdateAPIView: 레코드를 가져와서 표시하고 업데이트하기 위한 POST 호출을 수락하는 모든 기능 포함
 # generics.DestroyAPIView: DELETE 호출을 수락하고 최종적으로 레코드를 삭제하는 모든 기능 포함
 class SingleMenuItemsView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
     queryset = MenuItem.objects.all()
     serializer_class = MenuItemSerializer
+
+
+class CategoryView(generics.ListCreateAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
