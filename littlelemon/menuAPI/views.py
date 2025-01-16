@@ -1,30 +1,18 @@
-from tkinter import Menu
-
-from django.shortcuts import render
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.decorators import api_view
-from rest_framework.views import APIView
+from rest_framework import generics
+from .models import MenuItem
+from .serializers import MenuItemSerializer
 
 
 # Create your views here.
 
 
-@api_view(['GET', 'POST'])
-def menu(request):
-    return Response('This is the menu', status=status.HTTP_200_OK)
+# generics.ListCreateAPIView: 레코드를 표시하고 새 레코드를 만들기 위한 POST 호출 수락
+class MenuItemsView(generics.ListCreateAPIView):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
 
-
-class MenuList(APIView):
-    def get(self, request):
-        item = request.GET.get('item')
-        if(item):
-            return Response('Menu name: ' + item, status=status.HTTP_200_OK)
-        return Response({'message': 'This is the menu'}, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        return Response({'name': request.data.get('name')}, status=status.HTTP_201_CREATED)
-
-class Menu(APIView):
-    def get(self, request, pk):
-        return Response({'message': 'single menu with id: ' + str(pk)}, status=status.HTTP_200_OK)
+# generics.RetrieveUpdateAPIView: 레코드를 가져와서 표시하고 업데이트하기 위한 POST 호출을 수락하는 모든 기능 포함
+# generics.DestroyAPIView: DELETE 호출을 수락하고 최종적으로 레코드를 삭제하는 모든 기능 포함
+class SingleMenuItemsView(generics.RetrieveUpdateAPIView, generics.DestroyAPIView):
+    queryset = MenuItem.objects.all()
+    serializer_class = MenuItemSerializer
