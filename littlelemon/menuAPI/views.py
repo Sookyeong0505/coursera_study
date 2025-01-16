@@ -1,18 +1,23 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.decorators import api_view
 
 from .models import MenuItem, Category
 from .serializers import MenuItemSerializer, CategorySerializer
 
 
-@api_view()
+@api_view(['GET', 'POST'])
 def menu_items(request):
-    items = MenuItem.objects.all()
-    # serialized_item = MenuItemSerializer(items, many=True)
-    serialized_item = MenuItemSerializer(items, many=True, context={'request': request})
-    return Response(serialized_item.data)
+    if request.method == 'GET':
+        items = MenuItem.objects.all()
+        serialized_item = MenuItemSerializer(items, many=True, context={'request': request})
+        return Response(serialized_item.data)
+    if request.method == 'POST':
+        serialized_item = MenuItemSerializer(data=request.data, context={'request': request})
+        serialized_item.is_valid(raise_exception=True)
+        serialized_item.save()
+        return Response(serialized_item.data, status=status.HTTP_201_CREATED)
 
 
 @api_view()
