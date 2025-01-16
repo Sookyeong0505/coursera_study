@@ -10,7 +10,8 @@ from .serializers import MenuItemSerializer, CategorySerializer
 @api_view()
 def menu_items(request):
     items = MenuItem.objects.all()
-    serialized_item = MenuItemSerializer(items, many=True)
+    # serialized_item = MenuItemSerializer(items, many=True)
+    serialized_item = MenuItemSerializer(items, many=True, context={'request': request})
     return Response(serialized_item.data)
 
 
@@ -19,6 +20,13 @@ def single_item(request, id):
     item = get_object_or_404(MenuItem, pk=id)
     serialized_item = MenuItemSerializer(item)
     return Response(serialized_item.data)
+
+
+@api_view()
+def category_detail(request, pk):
+    category = get_object_or_404(Category, pk=pk)
+    serialized_category = CategorySerializer(category)
+    return Response(serialized_category.data)
 
 
 # generics.ListCreateAPIView: 레코드를 표시하고 새 레코드를 만들기 위한 POST 호출 수락
